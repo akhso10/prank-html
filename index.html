@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Diamond Top Up</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 3s ease infinite;
+      padding: 20px;
+      transition: background-color 1s ease;
+    }
+
+    @keyframes gradientShift {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+      width: 100%;
+      backdrop-filter: blur(10px);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      color: #667eea;
+      font-size: 2em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header p {
+      color: #666;
+      font-size: 0.9em;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1em;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-process {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      margin-top: 10px;
+    }
+
+    .btn-process:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-process:active {
+      transform: translateY(0);
+    }
+
+    .processing-container {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .processing-container.active {
+      display: block;
+    }
+
+    .loader {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #667eea;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 30px;
+      background: #e0e0e0;
+      border-radius: 15px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      width: 0%;
+      transition: width 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
+
+    .status-text {
+      color: #666;
+      margin: 10px 0;
+      font-size: 0.9em;
+    }
+
+    .prank-screen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: black;
+      color: lime;
+      font-family: monospace;
+      margin: 0;
+      overflow: hidden;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      animation: blinkBg 0.2s infinite alternate;
+      z-index: 9999;
+    }
+
+    .prank-screen.active {
+      display: flex;
+    }
+
+    @keyframes blinkBg {
+      0% { background-color: black; }
+      100% { background-color: darkred; }
+    }
+
+    .prank-screen h1 {
+      font-size: 2em;
+      margin: 0;
+      color: red;
+      text-shadow: 0 0 10px red;
+      animation: glitch 0.5s infinite;
+    }
+
+    @keyframes glitch {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(2px, -2px); }
+      60% { transform: translate(-2px, -2px); }
+      80% { transform: translate(2px, 2px); }
+    }
+
+    .prank-screen p {
+      font-size: 1.2em;
+      margin: 20px;
+    }
+
+    #console {
+      margin-top: 20px;
+      text-align: left;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 600px;
+      height: 200px;
+      overflow-y: auto;
+      box-shadow: 0 0 15px red inset;
+    }
+
+    .console-line {
+      margin: 5px 0;
+      color: lime;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Popup Error */
+    .error-popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      color: white;
+      font-family: 'Courier New', monospace;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .error-popup.active {
+      display: flex;
+    }
+
+    .error-box {
+      background: #8B0000;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 30px red;
+      border: 2px solid red;
+      max-width: 500px;
+      width: 90%;
+      animation: shake 0.5s infinite;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .error-title {
+      font-size: 2.5em;
+      color: white;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px red;
+    }
+
+    .error-message {
+      font-size: 1.5em;
+      color: white;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+
+    .error-button {
+      padding: 15px 30px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.2em;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    /* Multiple Error Popups */
+    .error-popup-2, .error-popup-3, .error-popup-4 {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #8B0000;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 30px red;
+      border: 2px solid red;
+      max-width: 400px;
+      width: 90%;
+      z-index: 10001;
+      color: white;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      animation: shake 0.5s infinite;
+    }
+
+    .error-popup-2.active, .error-popup-3.active, .error-popup-4.active {
+      display: block;
+    }
+
+    .error-popup-2 {
+      top: 30%;
+      left: 30%;
+    }
+
+    .error-popup-3 {
+      top: 60%;
+      left: 60%;
+    }
+
+    .error-popup-4 {
+      top: 40%;
+      left: 70%;
+    }
+
+    /* Responsif untuk mobile */
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+      }
+      
+      .header h1 {
+        font-size: 1.6em;
+      }
+      
+      .error-title {
+        font-size: 1.8em;
+      }
+      
+      .error-message {
+        font-size: 1.2em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>⚡ Game Diamond Top Up</h1>
+      <p>Top up diamond Mobile Legends & Free Fire gratis!</p>
+    </div>
+
+    <form id="topupForm" class="hidden">
+      <div class="form-group">
+        <label for="game">Pilih Game</label>
+        <select id="game" required>
+          <option value="">Pilih game</option>
+          <option value="ml">Mobile Legends</option>
+          <option value="ff">Free Fire</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Nama Player</label>
+        <input type="text" id="username" placeholder="Masukkan nama kamu" required>
+      </div>
+
+      <div class="form-group">
+        <label for="userId">User ID</label>
+        <input type="text" id="userId" placeholder="Masukkan ID game" required>
+      </div>
+
+      <div class="form-group">
+        <label for="diamonds">Jumlah Diamond</label>
+        <select id="diamonds" required>
+          <option value="">Pilih jumlah diamond</option>
+          <option value="100">100 Diamond</option>
+          <option value="250">250 Diamond</option>
+          <option value="500">500 Diamond</option>
+          <option value="1000">1000 Diamond</option>
+          <option value="2000">2000 Diamond</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-process">🚀 Proses Top Up</button>
+    </form>
+
+    <div id="processingContainer" class="processing-container">
+      <div class="loader"></div>
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill">0%</div>
+      </div>
+      <p class="status-text" id="statusText">Menghubungkan ke server...</p>
+    </div>
+  </div>
+
+  <div id="prankScreen" class="prank-screen">
+    <h1>⚠️ SYSTEM ERROR ⚠️</h1>
+    <p>KAMU KENA PRANK BRO! 😂</p>
+    <p>Gak ada diamond gratis di dunia ini!</p>
+    <div id="console">
+      <div class="console-line">&gt; Initializing fake system...</div>
+      <div class="console-line">&gt; ERROR: PRANK.EXE executed successfully</div>
+      <div class="console-line">&gt; Target: KENA PRANK</div>
+      <div class="console-line">&gt; Status: DIAMOND GRATIS? IN YOUR DREAMS!</div>
+      <div class="console-line">&gt; Lesson: Jangan percaya top up gratis ya 😝</div>
+    </div>
+  </div>
+
+  <!-- Multiple Error Popups -->
+  <div id="errorPopup" class="error-popup">
+    <div class="error-box">
+      <div class="error-title">Error! Error!</div>
+      <div class="error-message">System failure detected!<br>Your device has been compromised.</div>
+      <button class="error-button">OK</button>
+    </div>
+  </div>
+
+  <div id="errorPopup2" class="error-popup-2">
+    <div class="error-title">Error!</div>
+    <div class="error-message">Critical system failure!</div>
+    <button class="error-button">OK</button>
+  </div>
+
+  <div id="errorPopup3" class="error-popup-3">
+    <div class="error-title">Error!</div>
+    <div class="error-message">Virus detected!</div>
+    <button class="error-button">OK</button>
+  </div>
+
+  <div id="errorPopup4" class="error-popup-4">
+    <div class="error-title">Error!</div>
+    <div class="error-message">System compromised!</div>
+    <button class="error-button">OK</button>
+  </div>
+
+  <script>
+    const form = document.getElementById('topupForm');
+    const processingContainer = document.getElementById('processingContainer');
+    const progressFill = document.getElementById('progressFill');
+    const statusText = document.getElementById('statusText');
+    const prankScreen = document.getElementById('prankScreen');
+    const errorPopup = document.getElementById('errorPopup');
+    const errorPopup2 = document.getElementById('errorPopup2');
+    const errorPopup3 = document.getElementById('errorPopup3');
+    const errorPopup4 = document.getElementById('errorPopup4');
+    const body = document.body;
+
+    // Background colors yang akan berubah
+    const backgroundColors = [
+      'linear-gradient(45deg, #667eea 0%, #764ba2 100%)',
+      'linear-gradient(45deg, #f093fb 0%, #f5576c 100%)',
+      'linear-gradient(45deg, #4facfe 0%, #00f2fe 100%)',
+      'linear-gradient(45deg, #43e97b 0%, #38f9d7 100%)',
+      'linear-gradient(45deg, #fa709a 0%, #fee140 100%)',
+      'linear-gradient(45deg, #a8edea 0%, #fed6e3 100%)'
+    ];
+
+    let colorIndex = 0;
+
+    // Fungsi untuk mengubah background
+    function changeBackground() {
+      body.style.background = backgroundColors[colorIndex];
+      colorIndex = (colorIndex + 1) % backgroundColors.length;
+    }
+
+    // Ubah background setiap 1.5 detik (lebih cepat dari sebelumnya)
+    setInterval(changeBackground, 1500);
+
+    // Show form after page load
+    setTimeout(() => {
+      form.classList.remove('hidden');
+    }, 500);
+
+    const statusMessages = [
+      'Menghubungkan ke server...',
+      'Memverifikasi User ID...',
+      'Mengecek ketersediaan diamond...',
+      'Memproses transaksi...',
+      'Mengirim diamond ke akun...',
+      'Menyelesaikan proses...'
+    ];
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      // Hide form and show processing
+      form.style.display = 'none';
+      processingContainer.classList.add('active');
+
+      let progress = 0;
+      let messageIndex = 0;
+      const totalDuration = 20000; // 20 seconds
+      const updateInterval = 100; // Update every 100ms
+      const totalSteps = totalDuration / updateInterval;
+      const progressPerStep = 100 / totalSteps;
+
+      const interval = setInterval(() => {
+        progress += progressPerStep;
+        
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          
+          // Show prank screen after completion
+          setTimeout(() => {
+            prankScreen.classList.add('active');
+            
+            // Tambahkan pesan tambahan ke console
+            const consoleElement = document.getElementById('console');
+            const messages = [
+              "[!] Menghapus file /system/Android...",
+              "[!] Menginfeksi sistem kernel...",
+              "[!] Mencuri password...",
+              "[!] Mengirim data ke server...",
+              "[X] ERROR: Virus aktif!",
+              "[#] Sistem crash dalam 5...",
+              "[#] Sistem crash dalam 4...",
+              "[#] Sistem crash dalam 3...",
+              "[#] Sistem crash dalam 2...",
+              "[#] Sistem crash dalam 1..."
+            ];
+            
+            let messageIndex = 0;
+            const messageInterval = setInterval(() => {
+              if (messageIndex < messages.length) {
+                const newLine = document.createElement('div');
+                newLine.className = 'console-line';
+                newLine.textContent = messages[messageIndex];
+                consoleElement.appendChild(newLine);
+                consoleElement.scrollTop = consoleElement.scrollHeight;
+                messageIndex++;
+              } else {
+                clearInterval(messageInterval);
+                // Tampilkan multiple error popups setelah countdown selesai
+                setTimeout(() => {
+                  errorPopup.classList.add('active');
+                  
+                  // Tampilkan error popup lainnya secara berurutan
+                  setTimeout(() => {
+                    errorPopup2.classList.add('active');
+                  }, 500);
+                  
+                  setTimeout(() => {
+                    errorPopup3.classList.add('active');
+                  }, 1000);
+                  
+                  setTimeout(() => {
+                    errorPopup4.classList.add('active');
+                  }, 1500);
+                }, 500);
+              }
+            }, 500);
+          }, 500);
+        }
+
+        progressFill.style.width = progress + '%';
+        progressFill.textContent = Math.round(progress) + '%';
+
+        // Update status message every 3.3 seconds
+        const messageInterval = totalDuration / statusMessages.length;
+        const currentMessageIndex = Math.floor((progress / 100) * statusMessages.length);
+        if (currentMessageIndex !== messageIndex && currentMessageIndex < statusMessages.length) {
+          messageIndex = currentMessageIndex;
+          statusText.textContent = statusMessages[messageIndex];
+        }
+      }, updateInterval);
+    });
+  </script>
+</body>
+</html>

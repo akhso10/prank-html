@@ -22,6 +22,7 @@
       animation: gradientShift 3s ease infinite;
       padding: 20px;
       transition: background-color 1s ease;
+      overflow-x: hidden;
     }
 
     @keyframes gradientShift {
@@ -44,6 +45,13 @@
       max-width: 500px;
       width: 100%;
       backdrop-filter: blur(10px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      z-index: 10;
+    }
+
+    .container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
     }
 
     .header {
@@ -103,6 +111,23 @@
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       margin-top: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-process::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.7s;
+    }
+
+    .btn-process:hover::before {
+      left: 100%;
     }
 
     .btn-process:hover {
@@ -146,6 +171,7 @@
       border-radius: 15px;
       overflow: hidden;
       margin: 20px 0;
+      position: relative;
     }
 
     .progress-fill {
@@ -158,6 +184,24 @@
       justify-content: center;
       color: white;
       font-weight: 600;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
 
     .status-text {
@@ -166,7 +210,7 @@
       font-size: 0.9em;
     }
 
-    .prank-screen {
+    .system-screen {
       display: none;
       position: fixed;
       top: 0;
@@ -186,7 +230,7 @@
       z-index: 9999;
     }
 
-    .prank-screen.active {
+    .system-screen.active {
       display: flex;
     }
 
@@ -195,7 +239,7 @@
       100% { background-color: darkred; }
     }
 
-    .prank-screen h1 {
+    .system-screen h1 {
       font-size: 2em;
       margin: 0;
       color: red;
@@ -211,7 +255,7 @@
       80% { transform: translate(2px, 2px); }
     }
 
-    .prank-screen p {
+    .system-screen p {
       font-size: 1.2em;
       margin: 20px;
     }
@@ -238,7 +282,7 @@
       display: none;
     }
 
-    /* Popup Error */
+    /* Modern Error Popup */
     .error-popup {
       display: none;
       position: fixed;
@@ -261,14 +305,32 @@
     }
 
     .error-box {
-      background: #8B0000;
+      background: #1a1a1a;
       padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 0 30px red;
-      border: 2px solid red;
+      box-shadow: 0 0 30px #ff0000;
+      border: 2px solid #ff0000;
       max-width: 500px;
       width: 90%;
       animation: shake 0.5s infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .error-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(255, 0, 0, 0.1), transparent);
+      animation: scanline 2s linear infinite;
+    }
+
+    @keyframes scanline {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
     }
 
     @keyframes shake {
@@ -279,9 +341,9 @@
 
     .error-title {
       font-size: 2.5em;
-      color: white;
+      color: #ff0000;
       margin-bottom: 20px;
-      text-shadow: 0 0 10px red;
+      text-shadow: 0 0 10px #ff0000;
     }
 
     .error-message {
@@ -293,13 +355,30 @@
 
     .error-button {
       padding: 15px 30px;
-      background: red;
+      background: #ff0000;
       color: white;
       border: none;
       border-radius: 5px;
       font-size: 1.2em;
       cursor: not-allowed;
       opacity: 0.7;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .error-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.7s;
+    }
+
+    .error-button:hover::before {
+      left: 100%;
     }
 
     /* Multiple Error Popups */
@@ -309,11 +388,11 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: #8B0000;
+      background: #1a1a1a;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 0 30px red;
-      border: 2px solid red;
+      box-shadow: 0 0 30px #ff0000;
+      border: 2px solid #ff0000;
       max-width: 400px;
       width: 90%;
       z-index: 10001;
@@ -342,6 +421,145 @@
       left: 70%;
     }
 
+    /* Blue Screen of Death Effect */
+    .bsod {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: #0078d7;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      z-index: 10002;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .bsod.active {
+      display: flex;
+    }
+
+    .bsod-content {
+      max-width: 800px;
+      width: 90%;
+    }
+
+    .bsod-title {
+      font-size: 4em;
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+
+    .bsod-message {
+      font-size: 1.5em;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+
+    .bsod-details {
+      text-align: left;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+
+    .bsod-percentage {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    /* Shutdown Notification */
+    .shutdown-notification {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10003;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .shutdown-notification.active {
+      display: flex;
+    }
+
+    .shutdown-box {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 30px #ff0000;
+      border: 2px solid #ff0000;
+      max-width: 500px;
+      width: 90%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .shutdown-title {
+      font-size: 2.5em;
+      color: #ff0000;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #ff0000;
+    }
+
+    .shutdown-message {
+      font-size: 1.5em;
+      color: white;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+
+    .shutdown-countdown {
+      font-size: 3em;
+      color: #ff0000;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    /* Floating Error Popups */
+    .floating-error {
+      position: fixed;
+      background: #1a1a1a;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 0 20px #ff0000;
+      border: 1px solid #ff0000;
+      color: white;
+      font-family: 'Courier New', monospace;
+      z-index: 10004;
+      animation: floatError 5s linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes floatError {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
     /* Responsif untuk mobile */
     @media (max-width: 480px) {
       .container {
@@ -357,6 +575,22 @@
       }
       
       .error-message {
+        font-size: 1.2em;
+      }
+      
+      .bsod-title {
+        font-size: 2.5em;
+      }
+      
+      .bsod-message {
+        font-size: 1.2em;
+      }
+      
+      .shutdown-title {
+        font-size: 1.8em;
+      }
+      
+      .shutdown-message {
         font-size: 1.2em;
       }
     }
@@ -413,44 +647,69 @@
     </div>
   </div>
 
-  <div id="prankScreen" class="prank-screen">
+  <div id="systemScreen" class="system-screen">
     <h1>⚠️ SYSTEM ERROR ⚠️</h1>
-    <p>KAMU KENA PRANK BRO! 😂</p>
-    <p>Gak ada diamond gratis di dunia ini!</p>
+    <p>TERDETEKSI AKTIVITAS MENYIMPANG!</p>
+    <p>Diamond gratis tidak tersedia di sistem ini!</p>
     <div id="console">
-      <div class="console-line">&gt; Initializing fake system...</div>
-      <div class="console-line">&gt; ERROR: PRANK.EXE executed successfully</div>
-      <div class="console-line">&gt; Target: KENA PRANK</div>
-      <div class="console-line">&gt; Status: DIAMOND GRATIS? IN YOUR DREAMS!</div>
-      <div class="console-line">&gt; Lesson: Jangan percaya top up gratis ya 😝</div>
+      <div class="console-line">&gt; Initializing system analysis...</div>
+      <div class="console-line">&gt; ERROR: UNAUTHORIZED_ACCESS.EXE detected</div>
+      <div class="console-line">&gt; Target: USER_ATTEMPT_FREE_DIAMOND</div>
+      <div class="console-line">&gt; Status: DIAMOND GRATIS TIDAK TERSEDIA</div>
+      <div class="console-line">&gt; Lesson: Hati-hati dengan penawaran yang terlalu bagus</div>
     </div>
   </div>
 
-  <!-- Multiple Error Popups -->
+  <!-- Modern Error Popups -->
   <div id="errorPopup" class="error-popup">
     <div class="error-box">
-      <div class="error-title">Error! Error!</div>
+      <div class="error-title">CRITICAL ERROR</div>
       <div class="error-message">System failure detected!<br>Your device has been compromised.</div>
       <button class="error-button">OK</button>
     </div>
   </div>
 
   <div id="errorPopup2" class="error-popup-2">
-    <div class="error-title">Error!</div>
+    <div class="error-title">ERROR!</div>
     <div class="error-message">Critical system failure!</div>
     <button class="error-button">OK</button>
   </div>
 
   <div id="errorPopup3" class="error-popup-3">
-    <div class="error-title">Error!</div>
+    <div class="error-title">ERROR!</div>
     <div class="error-message">Virus detected!</div>
     <button class="error-button">OK</button>
   </div>
 
   <div id="errorPopup4" class="error-popup-4">
-    <div class="error-title">Error!</div>
+    <div class="error-title">ERROR!</div>
     <div class="error-message">System compromised!</div>
     <button class="error-button">OK</button>
+  </div>
+
+  <!-- Blue Screen of Death -->
+  <div id="bsod" class="bsod">
+    <div class="bsod-content">
+      <div class="bsod-title">:(</div>
+      <div class="bsod-message">
+        Your device ran into a problem and needs to restart. We're just collecting some error info, and then we'll restart for you.
+      </div>
+      <div class="bsod-percentage" id="bsodPercentage">0% complete</div>
+      <div class="bsod-details">
+        <p>If you'd like to know more, you can search online later for this error: DIAMOND_GRATIS_ATTEMPT</p>
+        <p>Stop code: UNAUTHORIZED_ACCESS</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shutdown Notification -->
+  <div id="shutdownNotification" class="shutdown-notification">
+    <div class="shutdown-box">
+      <div class="shutdown-title">PERINGATAN SISTEM</div>
+      <div class="shutdown-message">Perangkat Anda akan dimatikan secara otomatis dalam:</div>
+      <div class="shutdown-countdown" id="shutdownCountdown">10</div>
+      <div class="shutdown-message">Segera hubungi layanan dukungan teknis!</div>
+    </div>
   </div>
 
   <script>
@@ -458,11 +717,15 @@
     const processingContainer = document.getElementById('processingContainer');
     const progressFill = document.getElementById('progressFill');
     const statusText = document.getElementById('statusText');
-    const prankScreen = document.getElementById('prankScreen');
+    const systemScreen = document.getElementById('systemScreen');
     const errorPopup = document.getElementById('errorPopup');
     const errorPopup2 = document.getElementById('errorPopup2');
     const errorPopup3 = document.getElementById('errorPopup3');
     const errorPopup4 = document.getElementById('errorPopup4');
+    const bsod = document.getElementById('bsod');
+    const bsodPercentage = document.getElementById('bsodPercentage');
+    const shutdownNotification = document.getElementById('shutdownNotification');
+    const shutdownCountdown = document.getElementById('shutdownCountdown');
     const body = document.body;
 
     // Background colors yang akan berubah
@@ -500,6 +763,63 @@
       'Menyelesaikan proses...'
     ];
 
+    // Fungsi untuk membuat floating error popup
+    function createFloatingError() {
+      const error = document.createElement('div');
+      error.className = 'floating-error';
+      error.textContent = 'ERROR: System Failure!';
+      error.style.left = Math.random() * 80 + 'vw';
+      error.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      
+      document.body.appendChild(error);
+      
+      setTimeout(() => {
+        document.body.removeChild(error);
+      }, 5000);
+    }
+
+    // Fungsi untuk memutar suara
+    function playSound(type) {
+      // Membuat elemen audio secara dinamis
+      const audio = new Audio();
+      
+      if (type === 'error') {
+        // Suara error (buzzer)
+        const context = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = context.createOscillator();
+        const gainNode = context.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(context.destination);
+        
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.value = 150;
+        gainNode.gain.value = 0.1;
+        
+        oscillator.start();
+        setTimeout(() => {
+          oscillator.stop();
+        }, 500);
+      } else if (type === 'shutdown') {
+        // Suara shutdown (beep panjang)
+        const context = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = context.createOscillator();
+        const gainNode = context.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(context.destination);
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 220;
+        gainNode.gain.value = 0.1;
+        
+        oscillator.start();
+        setTimeout(() => {
+          oscillator.stop();
+        }, 1000);
+      }
+    }
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       
@@ -521,18 +841,18 @@
           progress = 100;
           clearInterval(interval);
           
-          // Show prank screen after completion
+          // Show system screen after completion
           setTimeout(() => {
-            prankScreen.classList.add('active');
+            systemScreen.classList.add('active');
             
             // Tambahkan pesan tambahan ke console
             const consoleElement = document.getElementById('console');
             const messages = [
-              "[!] Menghapus file /system/Android...",
-              "[!] Menginfeksi sistem kernel...",
-              "[!] Mencuri password...",
-              "[!] Mengirim data ke server...",
-              "[X] ERROR: Virus aktif!",
+              "[!] Menganalisis aktivitas sistem...",
+              "[!] Mendeteksi percobaan akses tidak sah...",
+              "[!] Mengaktifkan protokol keamanan...",
+              "[!] Mengirim notifikasi ke administrator...",
+              "[X] ERROR: Aktivitas mencurigakan terdeteksi!",
               "[#] Sistem crash dalam 5...",
               "[#] Sistem crash dalam 4...",
               "[#] Sistem crash dalam 3...",
@@ -549,6 +869,11 @@
                 consoleElement.appendChild(newLine);
                 consoleElement.scrollTop = consoleElement.scrollHeight;
                 messageIndex++;
+                
+                // Putar suara error pada pesan tertentu
+                if (messageIndex === 5 || messageIndex === 10) {
+                  playSound('error');
+                }
               } else {
                 clearInterval(messageInterval);
                 // Tampilkan multiple error popups setelah countdown selesai
@@ -567,6 +892,73 @@
                   setTimeout(() => {
                     errorPopup4.classList.add('active');
                   }, 1500);
+                  
+                  // Mulai membuat floating error popup yang tidak berhenti
+                  const floatingErrorInterval = setInterval(() => {
+                    createFloatingError();
+                    playSound('error');
+                  }, 1000);
+                  
+                  // Tampilkan Blue Screen of Death setelah beberapa detik
+                  setTimeout(() => {
+                    // Sembunyikan semua error popup
+                    errorPopup.classList.remove('active');
+                    errorPopup2.classList.remove('active');
+                    errorPopup3.classList.remove('active');
+                    errorPopup4.classList.remove('active');
+                    
+                    // Hentikan floating errors
+                    clearInterval(floatingErrorInterval);
+                    
+                    // Tampilkan BSOD
+                    bsod.classList.add('active');
+                    
+                    // Animasikan persentase BSOD
+                    let bsodProgress = 0;
+                    const bsodInterval = setInterval(() => {
+                      bsodProgress += 1;
+                      bsodPercentage.textContent = `${bsodProgress}% complete`;
+                      
+                      if (bsodProgress >= 100) {
+                        clearInterval(bsodInterval);
+                        
+                        // Tampilkan shutdown notification setelah BSOD selesai
+                        setTimeout(() => {
+                          bsod.classList.remove('active');
+                          shutdownNotification.classList.add('active');
+                          
+                          // Mulai countdown shutdown
+                          let countdown = 10;
+                          const countdownInterval = setInterval(() => {
+                            shutdownCountdown.textContent = countdown;
+                            countdown--;
+                            
+                            if (countdown < 0) {
+                              clearInterval(countdownInterval);
+                              // Putar suara shutdown
+                              playSound('shutdown');
+                              // Tampilkan pesan final
+                              shutdownCountdown.textContent = "0";
+                              shutdownNotification.querySelector('.shutdown-message').textContent = "Perangkat dimatikan!";
+                              
+                              // Reset setelah beberapa detik
+                              setTimeout(() => {
+                                shutdownNotification.classList.remove('active');
+                                systemScreen.classList.remove('active');
+                                processingContainer.classList.remove('active');
+                                form.style.display = 'block';
+                                
+                                // Reset progress
+                                progressFill.style.width = '0%';
+                                progressFill.textContent = '0%';
+                                statusText.textContent = 'Menghubungkan ke server...';
+                              }, 3000);
+                            }
+                          }, 1000);
+                        }, 2000);
+                      }
+                    }, 50);
+                  }, 5000);
                 }, 500);
               }
             }, 500);
